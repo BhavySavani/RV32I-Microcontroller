@@ -1,16 +1,15 @@
 module alu(
     input [31:0] src1,
     input [31:0] src2,
-    input logic [5:0] alu_control,
+    input logic [5:0] alu_cntrl,
     input logic [31:0] imm_val,
-    output logic [31:0] alu_result,
     input [3:0] shift_amount,
     output reg [31:0] result
 );
 
 always @(*)
 begin
-    case(alu_control) 
+    case(alu_cntrl) 
         6'b000000: result = src1 + src2; // ADD
         6'b000001: result = src1 - src2; // SUB
         6'b000010: result = src1 << shift_amount; // SLL
