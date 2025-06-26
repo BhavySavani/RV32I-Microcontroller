@@ -27,7 +27,7 @@ begin
         6'b001110: result = src1 ^ imm_val; // XORI
         6'b001111: result = src1 | imm_val; // ORI
         6'b010000: result = src1 & imm_val; // ANDI
-        6'b010001: result = imm_val; // LUI
+        6'b010001: result = imm_val<<12; // LUI
         default: result = 32'h00000000; // Default case, NOP or error state
     endcase
 
