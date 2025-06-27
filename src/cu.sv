@@ -13,7 +13,6 @@ module cu(
     output reg jump,
     output reg sw,
     output reg lui_cntrl,
-
 );
 
 always @(reset or opcode or funct3 or funct7)
