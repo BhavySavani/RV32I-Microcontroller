@@ -32,7 +32,7 @@ module top(
     
     
     
-    instruction_fetch_unit ifu(clk,
+    instructionfetch ifu(clk,
                                reset,
                                imm_val_branch_top,
                                imm_val_jump,
@@ -45,14 +45,14 @@ module top(
                                current_pc);
 
    
-    instruction_memory imu(clk,
+    instructionmem imu(clk,
                            pc,
                            reset,
                            instruction_out);
                            
     
     
-    control_unit cu(reset,
+    cu cu(reset,
                     instruction_out[31:25],
                     instruction_out[14:12],
                     instruction_out[6:0],
@@ -66,10 +66,9 @@ module top(
                     jump,
                     sw,
                     lui_control);
-   
- 
-             
-        data_path dpu(clk,reset,
+
+
+    datapathunit dpu(clk,reset,
                   instruction_out[19:15],
                   instruction_out[24 : 20],
                   instruction_out[11 : 7],
@@ -105,9 +104,9 @@ module top(
 	
 	assign immediate_value_store_temp = {{20{instruction_out[31]}},instruction_out[31:12]};
     
-    assign base_address = instruction_out[19:15];
+    assign base_addr = instruction_out[19:15];
 	
-	assign immediate_value_store = immediate_value_store_temp + base_address; 
+	assign immediate_value_store = immediate_value_store_temp + base_addr; 
 	
 	
     

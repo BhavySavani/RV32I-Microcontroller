@@ -1,4 +1,4 @@
-module pwm#(COUNTS=256,PRESCALER=0)(
+module pwm#(parameter int COUNTS=256,parameter int PRESCALER=0)(
     input logic clk,
     input logic reset,
     input logic [15:0] duty_cycle, // 16-bit duty cycle value
@@ -22,7 +22,7 @@ always_ff @(posedge clk or posedge reset) begin
     end
 end
 
-always @(posedge clk) begin
+always_ff @(posedge clk) begin
     if (enable) begin
         if (counter > PRESCALER && counter < (duty_cycle * COUNTS)/100) begin 
             pwm_out <= 1; // Set PWM output high

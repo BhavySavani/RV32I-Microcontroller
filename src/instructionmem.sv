@@ -16,10 +16,11 @@ module instructionmem(
     end
 
     always_ff @(posedge clk or posedge reset) begin
-        if (!reset) begin
+        if (reset) begin
             instruction <= 32'h00000000; // Reset instruction to NOP
         end else begin
             instruction <= {instruction_memory[pc+3], instruction_memory[pc+2], instruction_memory[pc+1], instruction_memory[pc]};
     end
     end
     
+endmodule

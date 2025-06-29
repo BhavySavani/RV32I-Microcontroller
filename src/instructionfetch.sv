@@ -35,3 +35,5 @@ always @(posedge clk or posedge reset) begin
         current_pc <= current_pc; 
     end
 end 
+
+endmodule

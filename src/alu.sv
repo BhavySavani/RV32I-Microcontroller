@@ -36,7 +36,6 @@ begin
         default: result = 32'h00000000; // Default case, NOP or error state
     endcase
 
-    alu_result = result;
 end
 
 endmodule
