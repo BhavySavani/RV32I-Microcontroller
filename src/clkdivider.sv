@@ -3,9 +3,11 @@ module clkdivider#(DIVISOR=4)(
     input logic reset,
     output logic clk_out
 );
+
 initial begin
-        clk_out = 0; // Initialize output clock
+        clk_out = 0; 
 end
+
 reg [$clog2(DIVISOR)-2:0] counter;
 reg counts = DIVISOR/2;
 always_ff @(posedge clk or posedge reset) begin
@@ -17,7 +19,7 @@ always_ff @(posedge clk or posedge reset) begin
             counter <= counter + 1;
         end else begin
             counter <= 0;
-            clk_out <= ~clk_out; // Toggle the output clock
+            clk_out <= ~clk_out; 
         end
     end
 end

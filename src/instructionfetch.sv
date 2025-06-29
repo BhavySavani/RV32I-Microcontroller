@@ -19,7 +19,7 @@ always @(posedge clk or posedge reset) begin
         if (jump) begin
             pc <= imm_addr_jump; // Jump to the specified address
         end else if (beq || bneq || bge || blt) begin
-            pc <= imm_addr;
+            pc <= pc+imm_addr;
         end else if(!beq && !bneq && !bge && !blt) begin
             pc <= pc + 4; 
         end

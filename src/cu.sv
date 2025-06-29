@@ -29,7 +29,6 @@ begin
             jump <= 0;
             lui_cntrl <= 0;
             case(funct3)
-
                 3'b000: alu_cntrl <= (funct7 == 7'b0000000) ? 6'b000000 : 6'b000001; // ADD or SUB
                 3'b001: alu_cntrl <= 6'b000010; // SLL
                 3'b010: alu_cntrl <= 6'b000011; // SLT
@@ -42,15 +41,153 @@ begin
         end
 
         7'b0010011: begin // I-type instructions
+            mem_to_reg <= 0;
+            beq_cntrl <= 0;
+            bneq_cntrl <= 0;
+            jump <= 0;
+            lb <= 0;
+            sw <= 0;
             case(funct3)
-                3'b000: alu_cntrl <= (funct7 == 7'b0000000) ? 6'b001010 : 6'b001011; // ADDI or SLTI
-                3'b001: alu_cntrl <= 6'b001100; // SLLI
-                3'b010: alu_cntrl <= 6'b001101; // SLTIU
-                3'b011: alu_cntrl <= (funct7 == 7'b0000000) ? 6'b001110 : 6'b001111; // XORI or ORI
-                3'b100: alu_cntrl <= (funct7 == 7'b0100000) ? 6'b010000 : 6'b010001; // ANDI or LUI
+                3'b000: alu_cntrl <= 6'b001010; // ADDI
+                3'b001: alu_cntrl <= 6'b001011; // SLLI
+                3'b010: alu_cntrl <= 6'b001100; // SLI
+                3'b011: alu_cntrl <= 6'b001101; // SLTU
+                3'b100: alu_cntrl <= 6'b001110; // XORI
+                3'b101: alu_cntrl <= 6'b001111; // SRLI
+                3'b110: alu_cntrl <= 6'b010000; // ORI
+                3'b111: alu_cntrl <= 6'b010001; // ANDI
             endcase
         end
-
+        7'b0000011: begin
+            case(funct3)
+                3'b000: begin
+                    alu_cntrl <= 6'b010010; // Load Byte
+                    mem_to_reg <= 1;
+                    lb <= 1;
+                    sw <= 0;
+                    beq_cntrl <= 0;
+                    bneq_cntrl <= 0;
+                    jump <= 0;
+                    lui_cntrl <= 0;
+                end
+                3'b001: begin // LH
+                    alu_cntrl <= 6'b010011; // Load Halfword
+                    mem_to_reg <= 1;
+                    lb <= 1;
+                    sw <= 0;
+                    beq_cntrl <= 0;
+                    bneq_cntrl <= 0;
+                    jump <= 0;
+                    lui_cntrl <= 0;
+                end
+                3'b010: begin // LW
+                    alu_cntrl <= 6'b010100; // Load Word
+                    mem_to_reg <= 1;
+                    lb <= 1;
+                    sw <= 0;
+                    beq_cntrl <= 0;
+                    bneq_cntrl <= 0;
+                    jump <= 0;
+                    lui_cntrl <= 0;
+                end
+                3'b100: begin // LBU
+                    alu_cntrl <= 6'b010101; // Load Byte Unsigned
+                    mem_to_reg <= 1;
+                    lb <= 1;
+                    sw <= 0;
+                    beq_cntrl <= 0;
+                    bneq_cntrl <= 0;
+                    jump <= 0;
+                    lui_cntrl <= 0;
+                end
+                3'b101: begin // LHU
+                    alu_cntrl <= 6'b010110; // Load Halfword Unsigned
+                    mem_to_reg <= 1;
+                    lb <= 1;
+                    sw <= 0;
+                    beq_cntrl <= 0;
+                    bneq_cntrl <= 0;
+                    jump <= 0;
+                    lui_cntrl <= 0;
+                end
+            endcase
+        end
+        7'b0100011: begin // S-type instructions
+            mem_to_reg <= 0;
+            beq_cntrl <= 0;
+            bneq_cntrl <= 0;
+            jump <= 0;
+            lui_cntrl <= 0;
+            lb <= 0;
+            sw <= 1; // Store Word
+            case(funct3)
+                3'b000: alu_cntrl <= 6'b010111; // SB
+                3'b001: alu_cntrl <= 6'b011000; // SH
+                3'b010: alu_cntrl <= 6'b011001; // SW
+            endcase
+        end
+        7'b1100011: begin // B-type instructions
+            case(funct3)
+                3'b000: begin
+                    mem_to_reg <= 0;
+                    beq_cntrl <= 1;
+                    bneq_cntrl <= 0;
+                    jump <= 0;
+                    lui_cntrl <= 0;
+                    lb <= 0;
+                    sw <= 0;
+                    alu_cntrl <= 6'b011010; // BEQ
+                end
+                3'b001: begin
+                    mem_to_reg <= 0;
+                    beq_cntrl <= 0;
+                    bneq_cntrl <= 1;
+                    jump <= 0;
+                    lui_cntrl <= 0;
+                    lb <= 0;
+                    sw <= 0;
+                    alu_cntrl <= 6'b011011; // BNE
+                end
+                3'b010: begin
+                    alu_cntrl <= 6'b011100; // BLT
+                end
+                3'b100: begin
+                    beq_cntrl <= 0;
+                    bneq_cntrl <= 0;
+                    bgeq_cntrl <= 0;
+                    blt_cntrl <= 1;
+                    alu_cntrl <= 6'b011101; // BLTI
+                end
+                3'b101: begin
+                    bgeq_cntrl = 1;
+                    blt_cntrl = 0;
+                    beq_cntrl = 0;
+                    bneq_cntrl = 0;
+                    alu_cntrl <= 6'b011101; // BGEQ     
+                end
+                3'b110 :alu_cntrl = 6'b011110; // BGEU
+            endcase
+        end
+        7'b011011: begin // LUI instruction
+            mem_to_reg <= 0;
+            beq_cntrl <= 0;
+            bneq_cntrl <= 0;
+            jump <= 0;
+            lui_cntrl <= 1; // LUI
+            lb <= 0;
+            sw <= 0;
+            alu_cntrl <= 6'b011111; // LUI
+        end
+        7'b1101111: begin // J-type instructions
+            mem_to_reg <= 0;
+            beq_cntrl <= 0;
+            bneq_cntrl <= 0;
+            jump <= 1; // Jump
+            lui_cntrl <= 0;
+            lb <= 0;
+            sw <= 0;
+            alu_cntrl <= 6'b100000; // JAL
+        end
         default: begin
             alu_cntrl <= 6'b111111; 
         end

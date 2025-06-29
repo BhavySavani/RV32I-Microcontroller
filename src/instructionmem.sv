@@ -21,3 +21,5 @@ module instructionmem(
         end else begin
             instruction <= {instruction_memory[pc+3], instruction_memory[pc+2], instruction_memory[pc+1], instruction_memory[pc]};
     end
+    end
+    
