@@ -6,19 +6,21 @@ module cu(
     output reg [5:0] alu_cntrl,
     output reg lb,
     output reg mem_to_reg,
-    output reg beq_cntrl,
     output reg bneq_cntrl,
+    output reg beq_cntrl,
     output reg bgeq_cntrl,
     output reg blt_cntrl,
     output reg jump,
     output reg sw,
-    output reg lui_cntrl,
+    output reg lui_cntrl
 );
 
 always @(reset or opcode or funct3 or funct7)
 begin
     if(reset) begin
     alu_cntrl <= 6'b000000; // Default ALU cntrl
+    end
+    else begin
     case(opcode)
         7'b0110011: begin // R-type instructions
             mem_to_reg <= 0;   

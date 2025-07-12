@@ -12,12 +12,14 @@ module data_memory (
     reg [31:0] mem [0:31];
 
    
-    always_ff @(posedge clk or posedge rst) begin
+    always @(posedge clk or posedge rst) begin
         if (rst) begin
             // On reset, clear memory 
             for (int i = 0; i < 32; i = i + 1) begin
                 mem[i] <= 32'h0;
             end
+	    mem[1] <= 32'b00000000000000000000000000000101;
+            mem[2] <= 32'b00000000000000000000000000000101;
         end else if (we) begin // If write enable is high
             mem[write_addr] <= write_data;
         end

@@ -10,7 +10,7 @@ end
 
 reg [$clog2(DIVISOR)-1:0] counter;
 localparam counts = DIVISOR/2;
-always_ff @(posedge clk or posedge reset) begin
+always@(posedge clk or posedge reset) begin
     if (reset) begin
         counter <= 0;
         clk_out <= 0;

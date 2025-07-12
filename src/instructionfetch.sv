@@ -8,8 +8,9 @@ module instructionfetch(
     input logic bge,
     input logic blt,
     input logic jump,
-    output logic [31:0] current_pc,
     output logic [31:0] pc,
+    output logic [31:0] current_pc
+    
 );
 
 always @(posedge clk or posedge reset) begin

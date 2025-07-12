@@ -24,7 +24,7 @@ begin
         6'b001011: result = (imm_val << shift_amount) ;// SLLI
         6'b001100: result = ( $signed(imm_val) < $signed(src1)) ? 1 : 0; // SLI
         6'b001101: result = ((imm_val<<1) < src1) ? 1 : 0; // SLTU
-        6'b001111: result = src1 >> imm_val_r; // SRLI
+        6'b001111: result = src1 >> imm_val; // SRLI
         6'b001110: result = src1 ^ imm_val; // XORI
         6'b010000: result = src1 | imm_val; // ORI
         6'b010001: result = src1 & imm_val; // ANDI

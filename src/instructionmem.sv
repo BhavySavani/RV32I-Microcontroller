@@ -9,7 +9,7 @@ module instructionmem(
     // Initialize instruction memory with some example instructions
     initial begin
         instruction_memory[0] = 8'b00000000; 
-        instruction_memory[1] = 8'b00000000; 
+        instruction_memory[1] = 8'b00010000; 
         instruction_memory[2] =8'b00000000; 
         instruction_memory[3] = 8'b00010011; 
         
@@ -21,6 +21,6 @@ module instructionmem(
         end else begin
             instruction <= {instruction_memory[pc+3], instruction_memory[pc+2], instruction_memory[pc+1], instruction_memory[pc]};
     end
-    end
+    end0
     
-endmodule
+endmodule0000
