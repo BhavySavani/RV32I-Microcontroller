@@ -46,15 +46,15 @@ end
 
  data_out_dm <= 32'b0; // Reset data output to 0
 
-        regfile[1] <= 32'b00000000000000000000000000000101;
-	regfile[2] <= 32'b00000000000000000000000000000101;
+        regfile[5] <= 32'b00000000000000000000000000000001;
+	regfile[3] <= 32'b00000000000000000000000000000101;
 
  end
 
  else
 
 begin
-
+ regfile[write_reg_num]<=write_data_dm;
  if(lb) begin
 
  regfile[write_reg_dm] <= write_data_dm; // Load byte operation
@@ -63,13 +63,13 @@ begin
 
 else if(sw) begin
 
-data_out_dm <= regfile[read_reg_num1]; // Store word operation
+data_out_dm <= regfile[read_reg_num2]; // Store word operation
 
  end
 
  else if(lui_cntrl) begin
 
- regfile[write_reg_dm <= imm_val_lui; // Load upper immediate operation
+ regfile[write_reg_dm] <= imm_val_lui; // Load upper immediate operation
 
 end
 

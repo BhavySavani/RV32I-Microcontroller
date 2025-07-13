@@ -102,11 +102,11 @@ module top(
     assign imm_val_jump = {{10{instruction_out[31]}},instruction_out[31:12]};
     assign imm_val = imm_val_top;
 	
-	assign immediate_value_store_temp = {{20{instruction_out[31]}},instruction_out[31:12]};
+    assign immediate_value_store_temp = {{20{instruction_out[31]}},instruction_out[31:12]};
     
     assign base_addr = instruction_out[19:15];
 	
-	assign immediate_value_store = immediate_value_store_temp + base_addr; 
+    assign immediate_value_store = immediate_value_store_temp + base_addr; 
 	
 	
     

@@ -7,7 +7,7 @@ module datapathunit(
     input logic [5:0]   alu_cntrl,
     input  jump,beq_cntrl,zero_flag,reg_dst,mem_to_reg,bneq_cntrl,
     input logic [31:0] imm_val,
-    input logic [31:0] shamt,
+    input logic [3:0] shamt,
     input lb,
     input sw,
     input bgeq_cntrl,blt_cntrl,lui_cntrl,
@@ -37,10 +37,10 @@ wire [31:0] write_data_dm;
 wire [4:0] rd_addr;
 wire [31:0] data_out;
 wire [31:0]  data_out_2_dm;
+wire [31:0] read_data_from_dm;
 regfile rfu (clk,reset,read_reg_num1,read_reg_num2,write_reg_num,data_out,lb,lui_control,imm_val_lui,return_address,jump,read_data1,read_data2,read_data_addr_dm_2,data_out_2_dm,sw);
 alu alu_unit(read_data1,read_data2,alu_cntrl,imm_val,shamt,write_data_alu);
-data_memory dmu(clk,reset,imm_val[4:0],data_out_2_dm,sw,imm_val[4:0],data_out);  
-
+data_memory dmu(clk,reset,imm_val[4:0],data_out_2_dm,sw,imm_val[4:0],read_data_from_dm);  
 initial begin 
     pc_current<=32'd0;
 end
@@ -50,7 +50,7 @@ always@(posedge clk)
             pc_current <= pc_next;
     end
     assign pc2 = pc_current + 4;
-    
+    assign data_out = (mem_to_reg == 1'b1) ? read_data_from_dm : write_data_alu;
     assign jump_shift = {instr[11:0],1'b0};
     assign reg_read_addr_1 = instr[13:10];
     assign reg_read_addr_2 = instr[9 :6];
