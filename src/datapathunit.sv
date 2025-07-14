@@ -14,8 +14,12 @@ module datapathunit(
     input [31:0] imm_val_lui,
     input [31:0] imm_val_jump,
     input [31:0] return_address,
+    input logic timer_en,timer_reg_en,
     output [4:0] read_data_addr_dm,
-    output beq,bneq,bgeq,blt
+    output beq,bneq,bgeq,blt,
+    output logic [15:0] TIM_PSC,
+    output logic [15:0] TIM_ARR,
+    output logic [31:0]write_data_alu,
 ); 
 reg [31:0] pc_current;
 reg [31:0] pc_next,pc_2;
@@ -32,7 +36,6 @@ wire [31:0] pc_2bneq;
 wire [31:0] read_data1;
 wire [31:0] read_data2;
 wire [4:0] read_data_addr_dm_2;
-wire [31:0] write_data_alu;
 wire [31:0] write_data_dm;
 wire [4:0] rd_addr;
 wire [31:0] data_out;
@@ -63,5 +66,7 @@ always@(posedge clk)
     assign pc_beq = pc2 + {ext_imm[31:21],1'b0};
     assign pc_bneq = pc2 + {ext_imm[31:21],1'b0};
     assign reg_write_dest = (reg_dst == 1'b1) ? instr[24 : 20] : instr[19 : 15];
-    
+    assign read_reg_num1 = (timer_reg_en == 1'b1 && timer_en == 1'b1) ? instr[19:15]:5'bzzzzz;
+    assign TIM_PSC = (timer_reg_en == 1'b1 && timer_en == 1'b1 && write_data_alu==8'b00000001) ? read_data1[15:0] : 16'bz; // TIM_PSC
+    assign TIM_ARR = (timer_reg_en == 1'b1 && timer_en == 1'b1 && write_data_alu==8'b00000010) ? read_data1[15:0] : 16'bz; // TIM_ARR
 endmodule

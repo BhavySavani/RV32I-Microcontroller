@@ -12,19 +12,17 @@ input logic [31:0] return_address,
 input logic jump,
 output logic [31:0] read_data1,
 
- output logic [31:0] read_data2,
+output logic [31:0] read_data2,
 
 output logic [31:0] read_data_addr_dm,
 
 output logic [31:0] data_out_dm,
-
 input logic sw
-
 );
 
 
 
-reg [31:0] regfile [31:0];
+reg [31:0] regfile [3:0];
 
 wire [31:0] write_reg_dm;
 
@@ -78,7 +76,9 @@ end
  regfile[write_reg_dm] <= return_address; // Store return address on jump
 
  end
-
+ 
+ else if(read_reg_num1 != 5'b0) begin
+        
 
 
  end

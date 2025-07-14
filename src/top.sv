@@ -65,7 +65,8 @@ module top(
                     blt_control,
                     jump,
                     sw,
-                    lui_control);
+                    lui_control,
+                    );
 
 
     datapathunit dpu(clk,reset,
@@ -89,13 +90,24 @@ module top(
                   imm_val_lui,
                   imm_val_jump,
                   current_pc,
+                  timer_en,
+                  timer_reg_en,
                   read_data_addr_dm,
                   beq,
                   bneq,
                   bge,
-                  blt
-                  
+                  blt,
+                  TIM_PSC_REG,
+                  TIM_ARR_REG,
                   );
+
+    TIM timer_unit(clk,
+                    timer_en,
+                    TIM_PSC, // TIM_PSC
+                    TIM_ARR, // TIM_ARR
+                    TIM_CNT, // 16-bit timer value
+                    timer_interrupt // Timer done signal
+    );
     assign imm_val_top = {{20{instruction_out[31]}},instruction_out[31:21]};
     assign imm_val_branch_top = {{20{instruction_out[31]}},instruction_out[30:25],instruction_out[11:8],instruction_out[7]};
     assign imm_val_lui = {10'b0,instruction_out[31:12]};
@@ -106,8 +118,9 @@ module top(
     
     assign base_addr = instruction_out[19:15];
 	
-    assign immediate_value_store = immediate_value_store_temp + base_addr; 
-	
-	
-    
+    assign immediate_value_store = immediate_value_store_temp + base_addr;
+
+	assign TIM_PSC =(timer_reg_en == 1'b0 && timer_en == 1'b1 && write_data_alu==8'b00000001) ? instruction_out[31:16] : 16'bz; // TIM_PSC
+	assign TIM_ARR =(timer_reg_en == 1'b0 && timer_en == 1'b1 && write_data_alu==8'b00000010) ? instruction_out[31:16] : 16'bz; // TIM_ARR
+
     endmodule
