@@ -45,9 +45,9 @@ for (i = 0; i < 32; i = i + 1) begin
 end
 
  data_out_dm <= 32'b0; // Reset data output to 0
-
-        regfile[5] <= 32'b00000000000000000000000000000001;
-	regfile[3] <= 32'b00000000000000000000000000000101;
+//test values for debugging
+        //regfile[5] <= 32'b00000000000000000000000000000001;
+	//regfile[3] <= 32'b00000000000000000000000000000101;
 
  end
 

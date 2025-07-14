@@ -18,8 +18,9 @@ module data_memory (
             for (int i = 0; i < 32; i = i + 1) begin
                 mem[i] <= 32'h0;
             end
-	    mem[1] <= 32'b00000000000000000000000000000101;
-            mem[2] <= 32'b00000000000000000000000000000101;
+            // Initialize some test values for debugging
+	    //mem[1] <= 32'b00000000000000000000000000000101;
+            //mem[2] <= 32'b00000000000000000000000000000101;
         end else if (we) begin // If write enable is high
             mem[write_addr] <= write_data;
         end
