@@ -29,8 +29,8 @@ begin
         6'b010000: result = src1 | imm_val; // ORI
         6'b010001: result = src1 & imm_val; // ANDI
         6'b010010: result = imm_val<<12; // LUI
-	6'b010111: result = src2[7:0];//SB
-	6'b011000: result = src2[15:0];//SH
+	    6'b010111: result = src2[7:0];//SB
+	    6'b011000: result = src2[15:0];//SH
         6'b011001: result = src2;//SW
         6'b011010: result =  (src1 == src2) ? 1 : 0; //BEQ
         6'b011011: result = (src1 != src2) ? 1 : 0; //BNEQ
