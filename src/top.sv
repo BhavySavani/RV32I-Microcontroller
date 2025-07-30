@@ -26,10 +26,14 @@ module top(
     wire [31:0] imm_val_lui;        // extracted immediate value for load upper immediate instruction (sign extended)
     wire [31:0] imm_val_jump;       // extracted immediate value for jump instruction (sign extended)
     wire [31:0] current_pc;         // register for storing return programme counter
-	wire [31:0]immediate_value_store_temp;
+    wire [31:0]immediate_value_store_temp;
 	wire [31:0]immediate_value_store;
 	wire [4:0] base_addr;
-    
+    wire [15:0] TIM_PSC_REG;
+    wire [15:0] TIM_ARR_REG;
+    wire [15:0] TIM_PSC;
+    wire [15:0] TIM_ARR;
+    wire [31:0] write_data_alu;
     
     
     instructionfetch ifu(clk,
@@ -66,6 +70,8 @@ module top(
                     jump,
                     sw,
                     lui_control,
+timer_en,
+timer_reg_en
                     );
 
 
@@ -99,6 +105,7 @@ module top(
                   blt,
                   TIM_PSC_REG,
                   TIM_ARR_REG,
+write_data_alu
                   );
 
     TIM timer_unit(clk,
@@ -120,7 +127,7 @@ module top(
 	
     assign immediate_value_store = immediate_value_store_temp + base_addr;
 
-	assign TIM_PSC =(timer_reg_en == 1'b0 && timer_en == 1'b1 && write_data_alu==8'b00000001) ? instruction_out[31:16] : 16'bz; // TIM_PSC
-	assign TIM_ARR =(timer_reg_en == 1'b0 && timer_en == 1'b1 && write_data_alu==8'b00000010) ? instruction_out[31:16] : 16'bz; // TIM_ARR
-
+	assign TIM_PSC =(timer_reg_en == 0 && timer_en  && write_data_alu==32'h00000001) ? instruction_out[31:16] : TIM_PSC_REG; // TIM_PSC
+	assign TIM_ARR =(timer_reg_en == 0 && timer_en  && write_data_alu==32'h00000010) ? instruction_out[31:16] : TIM_ARR_REG; // TIM_ARR
+	assign countdown=1'b0;
     endmodule

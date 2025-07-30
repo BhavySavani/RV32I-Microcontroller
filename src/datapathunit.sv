@@ -16,10 +16,10 @@ module datapathunit(
     input [31:0] return_address,
     input logic timer_en,timer_reg_en,
     output [4:0] read_data_addr_dm,
-    output beq,bneq,bgeq,blt,
+    output beq,bneq,bge,blt,
     output logic [15:0] TIM_PSC,
     output logic [15:0] TIM_ARR,
-    output logic [31:0]write_data_alu,
+    output logic [31:0] write_data_alu
 ); 
 reg [31:0] pc_current;
 reg [31:0] pc_next,pc_2;

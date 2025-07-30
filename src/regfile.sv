@@ -22,7 +22,7 @@ input logic sw
 
 
 
-reg [31:0] regfile [3:0];
+reg [31:0] regfile [31:0];
 
 wire [31:0] write_reg_dm;
 
@@ -43,9 +43,10 @@ for (i = 0; i < 32; i = i + 1) begin
 end
 
  data_out_dm <= 32'b0; // Reset data output to 0
-//test values for debugging
-        //regfile[5] <= 32'b00000000000000000000000000000001;
-	//regfile[3] <= 32'b00000000000000000000000000000101;
+	//test values for debugging
+	regfile[5] <= 32'b00000000000000000000000000000001;
+        regfile[6] <= 32'b00000000000000000000000001001001;
+	regfile[7] <= 32'b00000000000000000000000000100101;
 
  end
 
@@ -77,17 +78,8 @@ end
 
  end
  
- else if(read_reg_num1 != 5'b0) begin
-        
-
-
- end
-
 end
-
+end
 assign read_data1 = (read_reg_num1 != 5'b0) ? regfile[read_reg_num1] : 32'b0; // Read data from register 1
 assign read_data2 = (read_reg_num2 != 5'b0) ? regfile[read_reg_num2] : 32'b0; // Read data from register 2
-
-
-
 endmodule

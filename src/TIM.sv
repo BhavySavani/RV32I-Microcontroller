@@ -8,16 +8,17 @@ module TIM#()(
     output logic timer_interrupt // Timer done signal
 );
 
-logic [15:0] counter; // 16-bit counter
+logic [15:0] counter;// 16-bit counter
+reg clk_out;
 initial begin
     TIM_CNT = 0;
     timer_interrupt = 0;
     clk_out = 1; 
 end
-localparam counts= TIM_PSC/2;
+reg[14:0] counts= TIM_PSC/2;
 always@(posedge en) begin
         counter <= 0;
-        TIM_CNT <= 0;
+        TIM_CNT <= 8'h00;
         timer_interrupt <= 0;
         clk_out <= 0;
     end

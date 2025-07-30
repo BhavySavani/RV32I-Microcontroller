@@ -37,7 +37,7 @@ begin
         6'b011101: result = (src2 >= src1) ? 1 : 0 ; //BGEQ
         6'b011100: result = (src1 < src2) ? 1 : 0 ;//BLT
         6'b100001: result = 8'b00000001;
-        6'b100010: result = 8'b00000010; // JALR
+        6'b100010: result = 8'b00000010; 
         default: result = 32'h00000000; // Default case, NOP or error state
     endcase
 

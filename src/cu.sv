@@ -19,6 +19,18 @@ module cu(
 
 always @(reset or opcode or funct3 or funct7)
 begin
+    alu_cntrl = 6'b111111; // Default to an invalid/error state
+    lb = 1'b0;
+    mem_to_reg = 1'b0;
+    bneq_cntrl = 1'b0;
+    beq_cntrl = 1'b0;
+    bgeq_cntrl = 1'b0; // Default bgeq_cntrl to 0
+    blt_cntrl = 1'b0;
+    jump = 1'b0;
+    sw = 1'b0;
+    lui_cntrl = 1'b0;
+    timer_en = 1'b0;
+    timer_read_reg = 1'b0;
     if(reset) begin
     alu_cntrl <= 6'b000000; // Default ALU cntrl
     end
@@ -48,6 +60,8 @@ begin
             mem_to_reg <= 0;
             beq_cntrl <= 0;
             bneq_cntrl <= 0;
+            bgeq_cntrl <= 0;
+            blt_cntrl <= 0;
             jump <= 0;
             lb <= 0;
             sw <= 0;
@@ -63,56 +77,34 @@ begin
             endcase
         end
         7'b0000011: begin
+	    mem_to_reg <= 1;
+            lb <= 1;
+            sw <= 0;
+            beq_cntrl <= 0;
+            bneq_cntrl <= 0;
+            bgeq_cntrl <= 0;
+            blt_cntrl <= 0;
+            jump <= 0;
+            lui_cntrl <= 0;
             case(funct3)
                 3'b000: begin
                     alu_cntrl <= 6'b010010; // Load Byte
-                    mem_to_reg <= 1;
-                    lb <= 1;
-                    sw <= 0;
-                    beq_cntrl <= 0;
-                    bneq_cntrl <= 0;
-                    jump <= 0;
-                    lui_cntrl <= 0;
+                    
                 end
                 3'b001: begin // LH
                     alu_cntrl <= 6'b010011; // Load Halfword
-                    mem_to_reg <= 1;
-                    lb <= 1;
-                    sw <= 0;
-                    beq_cntrl <= 0;
-                    bneq_cntrl <= 0;
-                    jump <= 0;
-                    lui_cntrl <= 0;
                 end
                 3'b010: begin // LW
                     alu_cntrl <= 6'b010100; // Load Word
-                    mem_to_reg <= 1;
-                    lb <= 1;
-                    sw <= 0;
-                    beq_cntrl <= 0;
-                    bneq_cntrl <= 0;
-                    jump <= 0;
-                    lui_cntrl <= 0;
+                    
                 end
                 3'b100: begin // LBU
                     alu_cntrl <= 6'b010101; // Load Byte Unsigned
-                    mem_to_reg <= 1;
-                    lb <= 1;
-                    sw <= 0;
-                    beq_cntrl <= 0;
-                    bneq_cntrl <= 0;
-                    jump <= 0;
-                    lui_cntrl <= 0;
+                    
                 end
                 3'b101: begin // LHU
                     alu_cntrl <= 6'b010110; // Load Halfword Unsigned
-                    mem_to_reg <= 1;
-                    lb <= 1;
-                    sw <= 0;
-                    beq_cntrl <= 0;
-                    bneq_cntrl <= 0;
-                    jump <= 0;
-                    lui_cntrl <= 0;
+                    
                 end
             endcase
         end
@@ -120,6 +112,8 @@ begin
             mem_to_reg <= 0;
             beq_cntrl <= 0;
             bneq_cntrl <= 0;
+	    bgeq_cntrl <= 0;
+            blt_cntrl <= 0;
             jump <= 0;
             lui_cntrl <= 0;
             lb <= 0;
@@ -131,28 +125,31 @@ begin
             endcase
         end
         7'b1100011: begin // B-type instructions
+	    mem_to_reg <= 0;
+            jump <= 0;
+            lui_cntrl <= 0;
+            lb <= 0;
+            sw <= 0;
             case(funct3)
                 3'b000: begin
-                    mem_to_reg <= 0;
+	            bgeq_cntrl <= 0;
+                    blt_cntrl <= 0;
                     beq_cntrl <= 1;
                     bneq_cntrl <= 0;
-                    jump <= 0;
-                    lui_cntrl <= 0;
-                    lb <= 0;
-                    sw <= 0;
                     alu_cntrl <= 6'b011010; // BEQ
                 end
                 3'b001: begin
-                    mem_to_reg <= 0;
                     beq_cntrl <= 0;
                     bneq_cntrl <= 1;
-                    jump <= 0;
-                    lui_cntrl <= 0;
-                    lb <= 0;
-                    sw <= 0;
+                    bgeq_cntrl <= 0;
+                    blt_cntrl <= 0;
                     alu_cntrl <= 6'b011011; // BNE
                 end
                 3'b010: begin
+		    beq_cntrl <= 0;
+                    bneq_cntrl <= 0;
+                    bgeq_cntrl <= 0;
+                    blt_cntrl <= 0;
                     alu_cntrl <= 6'b011100; // BLT
                 end
                 3'b100: begin
@@ -176,6 +173,8 @@ begin
             mem_to_reg <= 0;
             beq_cntrl <= 0;
             bneq_cntrl <= 0;
+	    bgeq_cntrl <= 0;
+            blt_cntrl <= 0;
             jump <= 0;
             lui_cntrl <= 1; // LUI
             lb <= 0;
@@ -186,6 +185,8 @@ begin
             mem_to_reg <= 0;
             beq_cntrl <= 0;
             bneq_cntrl <= 0;
+            bgeq_cntrl <= 0;
+            blt_cntrl <= 0;
             jump <= 1; // Jump
             lui_cntrl <= 0;
             lb <= 0;
@@ -196,21 +197,35 @@ begin
             mem_to_reg <= 0;
             beq_cntrl <= 0;
             bneq_cntrl <= 0;
+	    bgeq_cntrl<=0;
+            blt_cntrl <= 0;
             jump <= 0;
             lui_cntrl <= 0;
             lb <= 0;
             sw <= 0;
             case(funct3)
                 3'b000: timer_en <= 1; // TIM_ENABLE
-                3'b001: timer_read_reg <= 0;
-                        alu_cntrl <= 6'b100001; // TIM_PSC_I
-                3'b010: timer_read_reg <= 0; // TIM_ARR_I
-                        alu_cntrl <= 6'b100010; // TIM_ARR_I
+                3'b001:begin
+			timer_en <= 1;
+			timer_read_reg <= 0;
+                        alu_cntrl <= 6'b100001;
+			end // TIM_PSC_I
+                3'b010: begin
+			timer_en <= 1;
+			timer_read_reg <= 0; // TIM_ARR_I
+                        alu_cntrl <= 6'b100010;
+			end	 // TIM_ARR_I
                 3'b111: timer_en <= 0; // TIM_DISABLE
-                3'b100: timer_read_reg <= 1; // TIM_PSC_REG
+                3'b100: begin
+			timer_en <= 1;
+			timer_read_reg <= 1; // TIM_PSC_REG
                         alu_cntrl <= 6'b100001; // TIM_PSC_REG
-                3'b101: timer_read_reg <= 1; // TIM_ARR_REG
-                        alu_cntrl <= 6'b100010; // TIM_ARR_REG
+			end
+                3'b101: begin
+			timer_en <= 1;
+			timer_read_reg <= 1; // TIM_ARR_REG
+                        alu_cntrl <= 6'b100010;
+			end // TIM_ARR_REG
             endcase
         end
         default: begin
