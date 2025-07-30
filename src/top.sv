@@ -106,6 +106,7 @@ timer_reg_en
                   TIM_PSC_REG,
                   TIM_ARR_REG,
 write_data_alu
+offset,
                   );
 
     TIM timer_unit(clk,
@@ -120,7 +121,7 @@ write_data_alu
     assign imm_val_lui = {10'b0,instruction_out[31:12]};
     assign imm_val_jump = {{10{instruction_out[31]}},instruction_out[31:12]};
     assign imm_val = imm_val_top;
-	
+	assign offset = (instruction_out[6:0]==7'b0100011) ? {instruction_out[31:25],instruction_out[11:7]} : instruction_out[31:20];
     assign immediate_value_store_temp = {{20{instruction_out[31]}},instruction_out[31:12]};
     
     assign base_addr = instruction_out[19:15];
