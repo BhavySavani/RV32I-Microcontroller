@@ -14,12 +14,13 @@ module cu(
     output reg sw,
     output reg lui_cntrl,
     output reg timer_en,
-    output reg timer_read_reg
+    output reg timer_read_reg,
+input reg stall
 );
 
-always @(reset or opcode or funct3 or funct7)
+always @(*)//reset or opcode or funct3 or funct7
 begin
-    alu_cntrl = 6'b111111; // Default to an invalid/error state
+     // Default to an invalid/error state
     lb = 1'b0;
     mem_to_reg = 1'b0;
     bneq_cntrl = 1'b0;
@@ -32,8 +33,12 @@ begin
     timer_en = 1'b0;
     timer_read_reg = 1'b0;
     if(reset) begin
-    alu_cntrl <= 6'b000000; // Default ALU cntrl
+    	alu_cntrl <= 6'b111111; // Default ALU cntrl
     end
+    else if (stall) begin
+        // DO NOTHING. The default values above will be used,
+        // turning the stalled instruction into a NOP.
+	end
     else begin
     case(opcode)
         7'b0110011: begin // R-type instructions

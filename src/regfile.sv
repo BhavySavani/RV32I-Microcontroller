@@ -14,10 +14,8 @@ output logic [31:0] read_data1,
 
 output logic [31:0] read_data2,
 
-output logic [31:0] read_data_addr_dm,
+output logic [31:0] read_data_addr_dm
 
-output logic [31:0] data_out_dm,
-input logic sw
 );
 
 
@@ -42,10 +40,10 @@ for (i = 0; i < 32; i = i + 1) begin
 
 end
 
- data_out_dm <= 32'b0; // Reset data output to 0
+ 
 	//test values for debugging
 	regfile[5] <= 32'b00000000000000000000000000000001;
-        regfile[6] <= 32'b00000000000000000000000001001001;
+        regfile[6] <= 32'b11111111111100011000000001011001;
 	regfile[7] <= 32'b00000000000000000000000000100101;
 
  end
@@ -60,11 +58,6 @@ begin
 
  end
 
-else if(sw) begin
-
-data_out_dm <= regfile[read_reg_num2]; // Store word operation
-
- end
 
  else if(lui_cntrl) begin
 

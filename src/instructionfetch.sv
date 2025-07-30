@@ -9,21 +9,26 @@ module instructionfetch(
     input logic blt,
     input logic jump,
     output logic [31:0] pc,
-    output logic [31:0] current_pc
-    
+    output logic [31:0] current_pc,
+    input logic stall
 );
 
 always @(posedge clk or posedge reset) begin
     if (reset) begin
         pc <= 32'h00000000; // Reset PC to 0
-    end else begin
+end
+    else if (!stall) begin
+	    pc<=pc;
+	end
+     else begin
         if (jump) begin
             pc <= imm_addr_jump; // Jump to the specified address
         end else if (beq || bneq || bge || blt) begin
             pc <= pc+imm_addr;
-        end else if(!beq && !bneq && !bge && !blt) begin
+        end else  begin
             pc <= pc + 4; 
         end
+	
     end
 end
 

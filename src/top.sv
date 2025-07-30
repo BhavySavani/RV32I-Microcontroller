@@ -34,8 +34,8 @@ module top(
     wire [15:0] TIM_PSC;
     wire [15:0] TIM_ARR;
     wire [31:0] write_data_alu;
-    
-    
+    wire [11:0] offset;
+    wire stall;
     instructionfetch ifu(clk,
                                reset,
                                imm_val_branch_top,
@@ -46,13 +46,13 @@ module top(
                                blt,
                                jump,
                                pc,
-                               current_pc);
+                               current_pc,stall);
 
    
     instructionmem imu(clk,
                            pc,
                            reset,
-                           instruction_out);
+                           instruction_out,stall);
                            
     
     
@@ -71,7 +71,7 @@ module top(
                     sw,
                     lui_control,
 timer_en,
-timer_reg_en
+timer_reg_en,stall
                     );
 
 
@@ -105,8 +105,9 @@ timer_reg_en
                   blt,
                   TIM_PSC_REG,
                   TIM_ARR_REG,
-write_data_alu
+write_data_alu,
 offset,
+stall
                   );
 
     TIM timer_unit(clk,
@@ -121,7 +122,7 @@ offset,
     assign imm_val_lui = {10'b0,instruction_out[31:12]};
     assign imm_val_jump = {{10{instruction_out[31]}},instruction_out[31:12]};
     assign imm_val = imm_val_top;
-	assign offset = (instruction_out[6:0]==7'b0100011) ? {instruction_out[31:25],instruction_out[11:7]} : instruction_out[31:20];
+    assign offset = (instruction_out[6:0]==7'b0100011) ? {instruction_out[31:25],instruction_out[11:7]} : instruction_out[31:20];
     assign immediate_value_store_temp = {{20{instruction_out[31]}},instruction_out[31:12]};
     
     assign base_addr = instruction_out[19:15];
