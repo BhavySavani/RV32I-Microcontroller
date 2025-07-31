@@ -207,15 +207,15 @@ begin
             case(funct3)
                 3'b000: timer_en <= 1; // TIM_ENABLE
                 3'b001:begin
-			timer_en <= 1;
-			timer_read_reg <= 0;
+			            timer_en <= 1;
+			            timer_read_reg <= 0;
                         alu_cntrl <= 6'b100001;
-			end // TIM_PSC_I
+			    end // TIM_PSC_I
                 3'b010: begin
-			timer_en <= 1;
-			timer_read_reg <= 0; // TIM_ARR_I
+			            timer_en <= 1;
+			            timer_read_reg <= 0; // TIM_ARR_I
                         alu_cntrl <= 6'b100010;
-			end	 // TIM_ARR_I
+			    end	 // TIM_ARR_I
                 3'b111: timer_en <= 0; // TIM_DISABLE
                 3'b100: begin
 			timer_en <= 1;
