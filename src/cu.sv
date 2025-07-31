@@ -14,8 +14,7 @@ module cu(
     output reg sw,
     output reg lui_cntrl,
     output reg timer_en,
-    output reg timer_read_reg,
-input reg stall
+    output reg timer_read_reg
 );
 
 always @(*)//reset or opcode or funct3 or funct7
@@ -35,10 +34,7 @@ begin
     if(reset) begin
     	alu_cntrl <= 6'b111111; // Default ALU cntrl
     end
-    else if (stall) begin
-        // DO NOTHING. The default values above will be used,
-        // turning the stalled instruction into a NOP.
-	end
+    
     else begin
     case(opcode)
         7'b0110011: begin // R-type instructions
@@ -174,7 +170,7 @@ begin
                 3'b110 :alu_cntrl = 6'b011110; // BGEU
             endcase
         end
-        7'b011011: begin // LUI instruction
+        7'b0110111: begin // LUI instruction
             mem_to_reg <= 0;
             beq_cntrl <= 0;
             bneq_cntrl <= 0;
@@ -184,7 +180,7 @@ begin
             lui_cntrl <= 1; // LUI
             lb <= 0;
             sw <= 0;
-            alu_cntrl <= 6'b011111; // LUI
+            alu_cntrl <= 6'b010010; // LUI
         end
         7'b1101111: begin // J-type instructions
             mem_to_reg <= 0;

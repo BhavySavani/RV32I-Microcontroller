@@ -6,6 +6,7 @@ module datapathunit(
     input logic [4:0] write_reg_num,
     input logic [5:0]   alu_cntrl,
     input  jump,beq_cntrl,zero_flag,reg_dst,mem_to_reg,bneq_cntrl,
+    input logic [31:0] imm_val_store,
     input logic [31:0] imm_val,
     input logic [3:0] shamt,
     input lb,
@@ -20,8 +21,7 @@ module datapathunit(
     output logic [15:0] TIM_PSC,
     output logic [15:0] TIM_ARR,
     output logic [31:0] write_data_alu,
-    input logic [11:0] offset,
-    output logic stall
+    input logic [11:0] offset
 ); 
 reg [31:0] pc_current;
 reg [31:0] pc_next,pc_2;
@@ -44,27 +44,20 @@ wire [31:0] data_out;
 wire [31:0]  data_out_2_dm;
 wire [31:0] read_data_from_dm;
 wire [4:0] write_addr;
-reg sw_reg;
+
 regfile rfu (clk,reset,read_reg_num1,read_reg_num2,write_reg_num,data_out,lb,lui_control,imm_val_lui,return_address,jump,read_data1,read_data2,read_data_addr_dm_2);
 alu alu_unit(read_data1,read_data2,alu_cntrl,imm_val,shamt,write_data_alu);
-data_memory dmu(clk,reset,write_addr,data_out_2_dm,stall,imm_val[4:0],read_data_from_dm);  
+data_memory dmu(clk,reset,write_addr,data_out_2_dm,sw,imm_val[4:0],read_data_from_dm);  
 initial begin 
     pc_current<=32'd0;
 end
-always @(posedge clk or posedge reset) begin
-    if (reset) begin
-        sw_reg <= 1'b0;
-    end else begin
-        sw_reg <= sw; 
-    end
-end
-assign stall = sw_reg;
+
 always@(posedge clk)
     begin
             pc_current <= pc_next;
     end
-    assign write_addr = (stall == 1'b1) ? read_data1 + offset : 5'bz;
-    assign data_out_2_dm = (sw_reg == 1'b1) ? write_data_alu : 32'bz;
+    assign write_addr = (sw == 1'b1) ? read_data1 + offset : 5'bz;
+    assign data_out_2_dm = (sw == 1'b1) ? write_data_alu : 32'bz;
     assign pc2 = pc_current + 4;
     assign data_out = (mem_to_reg == 1'b1) ? read_data_from_dm : write_data_alu;
     assign jump_shift = {instr[11:0],1'b0};

@@ -46,13 +46,13 @@ module top(
                                blt,
                                jump,
                                pc,
-                               current_pc,stall);
+                               current_pc);
 
    
     instructionmem imu(clk,
                            pc,
                            reset,
-                           instruction_out,stall);
+                           instruction_out);
                            
     
     
@@ -71,7 +71,7 @@ module top(
                     sw,
                     lui_control,
 timer_en,
-timer_reg_en,stall
+timer_reg_en
                     );
 
 
@@ -87,6 +87,7 @@ timer_reg_en,stall
                   mem_to_reg,
                   bneq_control,
                   immediate_value_store,
+		  imm_val_top,
                   instruction_out[24:20],
                   lb,
                   sw,
@@ -106,8 +107,7 @@ timer_reg_en,stall
                   TIM_PSC_REG,
                   TIM_ARR_REG,
 write_data_alu,
-offset,
-stall
+offset
                   );
 
     TIM timer_unit(clk,
@@ -117,11 +117,10 @@ stall
                     TIM_CNT, // 16-bit timer value
                     timer_interrupt // Timer done signal
     );
-    assign imm_val_top = {{20{instruction_out[31]}},instruction_out[31:21]};
+    assign imm_val_top = {{20{instruction_out[31]}},instruction_out[31:20]};
     assign imm_val_branch_top = {{20{instruction_out[31]}},instruction_out[30:25],instruction_out[11:8],instruction_out[7]};
     assign imm_val_lui = {10'b0,instruction_out[31:12]};
     assign imm_val_jump = {{10{instruction_out[31]}},instruction_out[31:12]};
-    assign imm_val = imm_val_top;
     assign offset = (instruction_out[6:0]==7'b0100011) ? {instruction_out[31:25],instruction_out[11:7]} : instruction_out[31:20];
     assign immediate_value_store_temp = {{20{instruction_out[31]}},instruction_out[31:12]};
     
@@ -129,7 +128,7 @@ stall
 	
     assign immediate_value_store = immediate_value_store_temp + base_addr;
 
-	assign TIM_PSC =(timer_reg_en == 0 && timer_en  && write_data_alu==32'h00000001) ? instruction_out[31:16] : TIM_PSC_REG; // TIM_PSC
-	assign TIM_ARR =(timer_reg_en == 0 && timer_en  && write_data_alu==32'h00000010) ? instruction_out[31:16] : TIM_ARR_REG; // TIM_ARR
-	assign countdown=1'b0;
+    assign TIM_PSC =(timer_reg_en == 0 && timer_en  && write_data_alu==32'h00000001) ? instruction_out[31:16] : TIM_PSC_REG; // TIM_PSC
+    assign TIM_ARR =(timer_reg_en == 0 && timer_en  && write_data_alu==32'h00000010) ? instruction_out[31:16] : TIM_ARR_REG; // TIM_ARR
+    assign countdown=1'b0;
     endmodule
