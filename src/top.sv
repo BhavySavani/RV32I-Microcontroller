@@ -29,13 +29,11 @@ module top(
     wire [31:0]immediate_value_store_temp;
 	wire [31:0]immediate_value_store;
 	wire [4:0] base_addr;
-    wire [15:0] TIM_PSC_REG;
-    wire [15:0] TIM_ARR_REG;
     wire [15:0] TIM_PSC;
     wire [15:0] TIM_ARR;
-    wire [31:0] write_data_alu;
+
     wire [11:0] offset;
-    wire stall;
+   
     instructionfetch ifu(clk,
                                reset,
                                imm_val_branch_top,
@@ -70,8 +68,7 @@ module top(
                     jump,
                     sw,
                     lui_control,
-timer_en,
-timer_reg_en
+timer_en
                     );
 
 
@@ -97,21 +94,19 @@ timer_reg_en
                   imm_val_lui,
                   imm_val_jump,
                   current_pc,
-                  timer_en,
-                  timer_reg_en,
                   read_data_addr_dm,
                   beq,
                   bneq,
                   bge,
                   blt,
-                  TIM_PSC_REG,
-                  TIM_ARR_REG,
-write_data_alu,
+                  TIM_PSC,
+                  TIM_ARR,
 offset
                   );
 
     TIM timer_unit(clk,
                     timer_en,
+		    countdown,
                     TIM_PSC, // TIM_PSC
                     TIM_ARR, // TIM_ARR
                     TIM_CNT, // 16-bit timer value
@@ -128,7 +123,6 @@ offset
 	
     assign immediate_value_store = immediate_value_store_temp + base_addr;
 
-    assign TIM_PSC =(timer_reg_en == 0 && timer_en  && write_data_alu==32'h00000001) ? instruction_out[31:16] : TIM_PSC_REG; // TIM_PSC
-    assign TIM_ARR =(timer_reg_en == 0 && timer_en  && write_data_alu==32'h00000010) ? instruction_out[31:16] : TIM_ARR_REG; // TIM_ARR
+    
     assign countdown=1'b0;
     endmodule

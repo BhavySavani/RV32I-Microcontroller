@@ -13,8 +13,7 @@ module cu(
     output reg jump,
     output reg sw,
     output reg lui_cntrl,
-    output reg timer_en,
-    output reg timer_read_reg
+    output reg timer_en
 );
 
 always @(*)//reset or opcode or funct3 or funct7
@@ -29,8 +28,8 @@ begin
     jump = 1'b0;
     sw = 1'b0;
     lui_cntrl = 1'b0;
-    timer_en = 1'b0;
-    timer_read_reg = 1'b0;
+    
+    
     if(reset) begin
     	alu_cntrl <= 6'b111111; // Default ALU cntrl
     end
@@ -206,27 +205,12 @@ begin
             sw <= 0;
             case(funct3)
                 3'b000: timer_en <= 1; // TIM_ENABLE
-                3'b001:begin
-			            timer_en <= 1;
-			            timer_read_reg <= 0;
-                        alu_cntrl <= 6'b100001;
-			    end // TIM_PSC_I
-                3'b010: begin
-			            timer_en <= 1;
-			            timer_read_reg <= 0; // TIM_ARR_I
-                        alu_cntrl <= 6'b100010;
-			    end	 // TIM_ARR_I
+                3'b001:alu_cntrl <= 6'b100001; // TIM_PSC_I
+                3'b010:alu_cntrl <= 6'b100010;// TIM_ARR_I
                 3'b111: timer_en <= 0; // TIM_DISABLE
-                3'b100: begin
-			timer_en <= 1;
-			timer_read_reg <= 1; // TIM_PSC_REG
-                        alu_cntrl <= 6'b100001; // TIM_PSC_REG
-			end
-                3'b101: begin
-			timer_en <= 1;
-			timer_read_reg <= 1; // TIM_ARR_REG
-                        alu_cntrl <= 6'b100010;
-			end // TIM_ARR_REG
+                3'b100:alu_cntrl <= 6'b100011; // TIM_PSC_REG
+                3'b101: alu_cntrl <= 6'b100100; // TIM_ARR_REG
+			
             endcase
         end
         default: begin

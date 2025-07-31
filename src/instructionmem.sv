@@ -9,13 +9,17 @@ module instructionmem(
     // Initialize instruction memory with some example instructions
     initial begin
         instruction_memory[0] = 8'h00; 
-        instruction_memory[1] = 8'hFF; 
+        instruction_memory[1] = 8'h02; 
         instruction_memory[2] = 8'h10; 
         instruction_memory[3] = 8'h25;
-	    instruction_memory[20] = 8'h12; 
-        instruction_memory[21] = 8'h34; 
-        instruction_memory[22] = 8'h52; 
-        instruction_memory[23] = 8'hB7;
+	instruction_memory[4] = 8'h00; 
+        instruction_memory[5] = 8'hFF; 
+        instruction_memory[6] = 8'h20; 
+        instruction_memory[7] = 8'h25;
+	instruction_memory[8] = 8'h00; 
+        instruction_memory[9] = 8'h00; 
+        instruction_memory[10] = 8'h00; 
+        instruction_memory[11] = 8'h25;
 
     end
 

@@ -15,12 +15,10 @@ module datapathunit(
     input [31:0] imm_val_lui,
     input [31:0] imm_val_jump,
     input [31:0] return_address,
-    input logic timer_en,timer_reg_en,
     output [4:0] read_data_addr_dm,
     output beq,bneq,bge,blt,
-    output logic [15:0] TIM_PSC,
-    output logic [15:0] TIM_ARR,
-    output logic [31:0] write_data_alu,
+    output reg [15:0] TIM_PSC,
+    output reg [15:0] TIM_ARR,
     input logic [11:0] offset
 ); 
 reg [31:0] pc_current;
@@ -44,7 +42,7 @@ wire [31:0] data_out;
 wire [31:0]  data_out_2_dm;
 wire [31:0] read_data_from_dm;
 wire [4:0] write_addr;
-
+wire[31:0] write_data_alu;
 regfile rfu (clk,reset,read_reg_num1,read_reg_num2,write_reg_num,data_out,lb,lui_control,imm_val_lui,return_address,jump,read_data1,read_data2,read_data_addr_dm_2);
 alu alu_unit(read_data1,read_data2,alu_cntrl,imm_val,shamt,write_data_alu);
 data_memory dmu(clk,reset,write_addr,data_out_2_dm,sw,imm_val[4:0],read_data_from_dm);  
@@ -72,9 +70,35 @@ always@(posedge clk)
     assign pc_beq = pc2 + {ext_imm[31:21],1'b0};
     assign pc_bneq = pc2 + {ext_imm[31:21],1'b0};
     assign reg_write_dest = (reg_dst == 1'b1) ? instr[24 : 20] : instr[19 : 15];
-    assign read_reg_num1 = (timer_reg_en == 1'b1 && timer_en == 1'b1) ? instr[19:15]:5'bzzzzz;
-    assign TIM_PSC = (timer_reg_en == 1'b1 && timer_en == 1'b1 && write_data_alu==8'b00000001) ? read_data1[15:0] : 16'bz; // TIM_PSC
-    assign TIM_ARR = (timer_reg_en == 1'b1 && timer_en == 1'b1 && write_data_alu==8'b00000010) ? read_data1[15:0] : 16'bz; // TIM_ARR
+    //assign read_reg_num1 = (alu_cntrl == 6'b100100 || alu_cntrl == 6'b100011) ? instr[19:15]:5'bzzzzz;
+always @(posedge clk or posedge reset) begin
+    if (reset) begin
+        TIM_PSC <= 16'b0;
+    end else begin
+
+        // --- Logic for TIM_PSC (Independent) ---
+        if (alu_cntrl == 6'b100001) begin
+            TIM_PSC <= {imm_val[11:0], read_reg_num1[4:1]};
+        end
+        else if (alu_cntrl == 6'b100011) begin
+            TIM_PSC <= read_data1[15:0];
+        end
+end
+end
+always @(posedge clk or posedge reset) begin
+    if (reset) begin
+        //TIM_ARR <= 16'b0;
+    end else begin
+        // --- Logic for TIM_ARR (Independent) ---
+        if (alu_cntrl == 6'b100010) begin
+            TIM_ARR <= {imm_val[11:0], read_reg_num1[4:1]};
+        end
+        else if (alu_cntrl == 6'b100100) begin
+            TIM_ARR <= read_data1[15:0];
+        end
+        
+    end
+end
 endmodule
 
 
