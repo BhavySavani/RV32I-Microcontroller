@@ -1,6 +1,7 @@
-module datapathunit(
+	module datapathunit(
     input logic clk,
     input logic reset,
+	input logic [31:0]instr,
     input logic [4:0] read_reg_num1,
     input logic [4:0] read_reg_num2,
     input logic [4:0] write_reg_num,
@@ -23,7 +24,7 @@ module datapathunit(
 ); 
 reg [31:0] pc_current;
 reg [31:0] pc_next,pc_2;
-wire [31:0] instr;
+
 wire [31:0] ext_imm;
 wire [31:0] read_reg_data_2;
 wire [31:0] read_reg_data_1;
@@ -87,7 +88,7 @@ end
 end
 always @(posedge clk or posedge reset) begin
     if (reset) begin
-        //TIM_ARR <= 16'b0;
+        TIM_ARR <= 16'b0;
     end else begin
         // --- Logic for TIM_ARR (Independent) ---
         if (alu_cntrl == 6'b100010) begin

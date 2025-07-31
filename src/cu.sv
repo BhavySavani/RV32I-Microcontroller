@@ -204,10 +204,16 @@ begin
             lb <= 0;
             sw <= 0;
             case(funct3)
-                3'b000: timer_en <= 1; // TIM_ENABLE
+                3'b000: begin 
+			timer_en <= 1; // TIM_ENABLE
+			alu_cntrl <= 6'b111111;
+			end
                 3'b001:alu_cntrl <= 6'b100001; // TIM_PSC_I
                 3'b010:alu_cntrl <= 6'b100010;// TIM_ARR_I
-                3'b111: timer_en <= 0; // TIM_DISABLE
+                3'b111: begin 
+			timer_en <= 0; // TIM_DISABLE
+			alu_cntrl <= 6'b111111;
+			end 
                 3'b100:alu_cntrl <= 6'b100011; // TIM_PSC_REG
                 3'b101: alu_cntrl <= 6'b100100; // TIM_ARR_REG
 			

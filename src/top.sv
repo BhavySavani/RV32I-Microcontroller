@@ -33,7 +33,10 @@ module top(
     wire [15:0] TIM_ARR;
 
     wire [11:0] offset;
-   
+    wire [15:0] TIM_CCR1;
+    wire [15:0] TIM_CCR2;
+wire pwm1;
+wire pwm2;
     instructionfetch ifu(clk,
                                reset,
                                imm_val_branch_top,
@@ -73,6 +76,7 @@ timer_en
 
 
     datapathunit dpu(clk,reset,
+		 	instruction_out,
                   instruction_out[19:15],
                   instruction_out[24 : 20],
                   instruction_out[11 : 7],
@@ -109,9 +113,14 @@ offset
 		    countdown,
                     TIM_PSC, // TIM_PSC
                     TIM_ARR, // TIM_ARR
+		    TIM_CCR1,
+		    TIM_CCR2,
                     TIM_CNT, // 16-bit timer value
-                    timer_interrupt // Timer done signal
+                    timer_interrupt,// Timer done signal
+		    pwm1,
+		    pwm2
     );
+
     assign imm_val_top = {{20{instruction_out[31]}},instruction_out[31:20]};
     assign imm_val_branch_top = {{20{instruction_out[31]}},instruction_out[30:25],instruction_out[11:8],instruction_out[7]};
     assign imm_val_lui = {10'b0,instruction_out[31:12]};
@@ -122,6 +131,8 @@ offset
     assign base_addr = instruction_out[19:15];
 	
     assign immediate_value_store = immediate_value_store_temp + base_addr;
+    //assign TIM_CCR1=15'd100; for test
+    //assign TIM_CCR2=15'd75;
 
     
     assign countdown=1'b0;

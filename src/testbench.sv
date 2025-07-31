@@ -34,7 +34,7 @@ module testbench;
     // Wait for reset deassertion
     @(negedge reset);
     // Run simulation for some time
-    #1000;
+    #1000000000;
     $finish;
   end
 
