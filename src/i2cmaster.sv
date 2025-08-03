@@ -9,7 +9,7 @@ module i2c_master(
     input logic en,
     input logic rw,
     
-    output reg[7:0] data_out,
+    output logic [7:0] data_out,
     output logic ready,
     output logic read_data
     );

@@ -121,7 +121,7 @@ offset
 		    pwm2
     );
     
-    i2c_master I2C(sda,scl,clk,reset,i2c_addr,i2c_data,i2c_en.i2c_rw,i2c_data_out,i2c_ready,i2c_read_data);
+    //i2c_master I2C(sda,scl,clk,reset,i2c_addr,i2c_data,i2c_en.i2c_rw,i2c_data_out,i2c_ready,i2c_read_data);
 
     assign imm_val_top = {{20{instruction_out[31]}},instruction_out[31:20]};
     assign imm_val_branch_top = {{20{instruction_out[31]}},instruction_out[30:25],instruction_out[11:8],instruction_out[7]};
@@ -133,8 +133,9 @@ offset
     assign base_addr = instruction_out[19:15];
 	
     assign immediate_value_store = immediate_value_store_temp + base_addr;
-    //assign TIM_CCR1=15'd100; for test
-    //assign TIM_CCR2=15'd75;
+    //for test
+    assign TIM_CCR1=15'd100;
+    assign TIM_CCR2=15'd75;
 
     
     assign countdown=1'b0;
