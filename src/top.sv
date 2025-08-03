@@ -120,6 +120,8 @@ offset
 		    pwm1,
 		    pwm2
     );
+    
+    i2c_master I2C(sda,scl,clk,reset,i2c_addr,i2c_data,i2c_en.i2c_rw,i2c_data_out,i2c_ready,i2c_read_data);
 
     assign imm_val_top = {{20{instruction_out[31]}},instruction_out[31:20]};
     assign imm_val_branch_top = {{20{instruction_out[31]}},instruction_out[30:25],instruction_out[11:8],instruction_out[7]};
